@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import rd3 from 'rd3';
+import $ from 'jquery';
 
 
-let LineChart = rd3.LineChart
+let LineChart = rd3.LineChart;
+/*
 let lineData = [
     {
         name: 'react',
@@ -24,13 +26,37 @@ let lineData = [
     }
 ];
 
+*/
 class Charts extends Component {
+    constructor() {
+        super();
+        this.state = {
+            info: []
+        }
+    };
+
+     getData() {
+        return new Promise((resolve, reject) => {
+            $.ajax({
+                url: 'http://localhost:3004/data', //would be BE url
+                dataType: 'json',
+                cache: false,
+                success: function(data) {
+                    this.setState({info: data}, function() {
+                        console.log(this.state);
+                    });
+                }.bind(this)
+            });
+        });//promise
+    }; //my func
+
     render() {
+        this.getData();
         return (
             <div className="Charts">
                 <LineChart
                     legend={true}
-                    data={lineData}
+                    data={this.state.info}
                     width='75%'
                     height={400}
                     viewBoxObject={{
