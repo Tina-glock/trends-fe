@@ -1,20 +1,12 @@
 import React, { Component } from 'react';
 import rd3 from 'rd3';
-import $ from 'jquery';
-import Select from 'react-select';
-import 'react-select/dist/react-select.css';
+// import Select from 'react-select';
+// import 'react-select/dist/react-select.css';
 
 
 
 let LineChart = rd3.LineChart;
 //let Select = require('react-select');
-
-let options = [
-    { value: 'react', label: 'React' },
-    { value: 'drupal', label: 'Drupal' },
-    { value: 'rails', label: 'Rails' },
-    { value: 'node', label: 'Node' },
-];
 
 
 class Search extends Component {
@@ -23,59 +15,47 @@ class Search extends Component {
         this.state = {
             allReports: [],
             request: []
-        }
-        this.handleChange = this.handleChange.bind(this);
+        };
+    }
+
+    static defaultProps = {
+            techOptions: [
+            { value: 'react', label: 'React' },
+            { value: 'meteor', label: 'meteor' },
+            { value: 'vue', label: 'vue' },
+            { value: 'angular', label: 'angular' },
+        ]
     };
 
     handleChange(event) {
-        var newArray = this.state.request.slice();
-        newArray.push(event.target.value);
-        this.setState({request: newArray});
-        console.log("Selected: " + JSON.stringify(this.state.request));
+        this.props.updateFilters({
+            techs: this.getOptions()
+        });
     }
 
-    getAllReports() {
-        return new Promise((resolve, reject) => {
-            $.ajax({
-                url: '#', //would be BE url
-                dataType: 'json',
-                cache: false,
-                success: function(data) {
-                    this.setState({allReports: data}, function() {
-                        console.log(this.state);
-                    });
-                }.bind(this)
-            });
-        });//promise
-    }; //my func
+    getOptions() {
+        let options = this.refs.techs.selectedOptions || [];
+        let arr = [];
+        for (let i = 0; i < options.length; i++) {
+            arr.push(options[i].value);
+        }
+        return arr;
+    }
 
     render() {
-        //this.getAllReports();
+        let options = this.props.techOptions.map(option => {
+          return <option key={option.value} value={option.value}>{option.label}</option>
+        });
         return (
             <div className="Search">
-                <form onSubmit={this.handleSubmit}>
+                <form>
                 <label>
                     Pick the technology:
-                    <select value={this.state.value} onChange={this.handleChange} multiple>
-                        <option value="react">react</option>
-                        <option value="drupal">drupal</option>
-                        <option value="rails">rails</option>
-                        <option value="node">node</option>
+                    <select ref="techs" defaultValue={this.props.techOptions.map(option => option.value)} onChange={this.handleChange.bind(this)} multiple>
+                        {options}
                     </select>
                 </label>
-                    /*
- <label>
-     <Select
-         name="form-field-name"
-         value={this.state.value}
-         multi={true}
-         options={options}
-         onChange={this.handleChange}
-     />
- </label>
- */
 
-                    <input type="submit" value="Submit" />
                 </form>
             </div>
         );
