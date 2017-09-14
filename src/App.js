@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import Charts from './Components/Charts'
+import Charts from './Components/Charts';
+import Search from './Components/Search';
 import './App.css';
 
 class App extends Component {
@@ -11,7 +12,8 @@ class App extends Component {
         </div>
           <div>
               <Charts />
-          </div>>
+              <Search />
+          </div>
       </div>
     );
   }
